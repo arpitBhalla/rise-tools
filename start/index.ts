@@ -118,6 +118,13 @@ export type StrictRouteParamsInputs<Path> = {
     : Key]: Key extends `...${string}` ? (string | number)[] : string | number
 }
 
-export const s: R = 'org/[orgId]/project/[projectId]/member.tsx'
+export type DynamicTemplateToHrefString<Path> = Path extends `${infer PartA}/${infer PartB}`
+  ? // If the current segment (PartA) is dynamic, allow any string. This loop again with the next segment (PartB)
+    `${PartA extends `[${string}]` ? string : PartA}/${DynamicTemplateToHrefString<PartB>}`
+  : // Path is the last segment.
+    Path extends `[${string}]`
+    ? string
+    : Path
 
-export const sa: StrictRouteParamsInputs<typeof s> = { orgId: '', projectId: '' }
+export const s: R = 'org/[orgId]/project/[projectId]/info'
+export const sa: DynamicTemplateToHrefString<typeof s> = 'org/demo/project/demo/member.tsx'
