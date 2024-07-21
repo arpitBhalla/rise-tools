@@ -19,8 +19,9 @@
 
 ```tsx
 import { createWSServer, InferModel } from '@rise-tools/server'
+import { createModelRoutes } from '....'
 
-const models = createRouter()
+const models = createModelRoutes()
 
 createWSServer(models, port)
 ```
