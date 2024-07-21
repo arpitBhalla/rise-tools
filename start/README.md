@@ -18,7 +18,7 @@
 ## Usage
 
 ```tsx
-import { createWSServer, InferModel } from '@rise-tools/server'
+import { createWSServer } from '@rise-tools/server'
 import { createModelRoutes } from '....'
 
 const models = createModelRoutes()
@@ -69,7 +69,7 @@ const models = {
 #### Structure of model file
 
 ```tsx
-// models/[userId]/index.tsx
+// models/profile/[userId]/index.tsx
 export const query = createQuery((param) => {
   await db.getUser(param)
 })
