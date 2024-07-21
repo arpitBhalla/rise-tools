@@ -6,7 +6,7 @@
 - [Rise Start](#rise-start)
 - [Usage](#usage)
 - [Example](#example)
-    - [Structure of model](#structure-of-model)
+    - [Structure of model file](#structure-of-model-file)
 - [More Examples](#more-examples)
   - [`models/index.tsx → /`](#modelsindextsx--)
   - [`models/org/[orgId].tsx → /org/{orgId}`](#modelsorgorgidtsx--orgorgid)
@@ -40,12 +40,12 @@ createWSServer(models, port)
 const models = {
   org: {
     '': lookup((origId) => ({
-      project: lookup((projectId) => ({
-        '': () => {},
-        member: () => {},
-      })),
-      projects: () => {},
-    })),
+            project: lookup((projectId) => ({
+                '': () => {},
+                member: () => {},
+            })),
+            projects: () => {},
+        })),
     new: () => {},
   },
   profile: lookup((userId) => ({
@@ -54,6 +54,7 @@ const models = {
     followings: () => {},
   })),
 }
+
 ```
 
 
@@ -64,20 +65,19 @@ const models = {
 </table>
 
 
-#### Structure of model
+#### Structure of model file
 
 ```tsx
-// models/[userId]/
+// models/[userId]/index.tsx
 export const query = createQuery((param) => {
   await db.getUser(param)
 })
 
+// const ... = get(query)
 export default function UserProfileModel({ query, param: userId }) {
-  return view((get) => {
-    // const ... = get(query)
     return <JSX />
-  })
 }
+
 ```
 
 
