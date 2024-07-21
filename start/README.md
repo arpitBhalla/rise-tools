@@ -1,6 +1,6 @@
 ## Rise Start
 
-> Smoothly start the development with file based model routing
+> Smoothly start development using file-based model routing.
 
 
 - [Rise Start](#rise-start)
