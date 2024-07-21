@@ -1,7 +1,4 @@
-/**
- * @jest-environment node
- */
-
+import { afterAll, describe, expect, Mock, test } from 'vitest'
 import WS, { WebSocket } from 'ws'
 
 import { state } from '../model-state'
@@ -12,7 +9,7 @@ import { createWaitableMock } from './test-utils'
 type TestServerClient = {
   client: WebSocket
   close: () => void
-  clientMessages: jest.Mock
+  clientMessages: Mock
   waitForClientMessages: (t: number) => Promise<void>
   clientSend: (data: any) => void
 }

@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest'
+
 import { lookup } from '../model-lookup'
 import { state } from '../model-state'
 import { findModel, getModelState } from '../model-utils'

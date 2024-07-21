@@ -1,7 +1,4 @@
-/**
- * @jest-environment node
- */
-import fetch from 'node-fetch/lib/index'
+import { afterAll, describe, expect, test } from 'vitest'
 
 import { createHTTPServer } from '../http-server'
 import { AnyModels } from '../types'

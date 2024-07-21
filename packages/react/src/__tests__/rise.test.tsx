@@ -1,7 +1,8 @@
 import { act, fireEvent, render } from '@testing-library/react'
 import React, { useState } from 'react'
+import { expect, it, vi } from 'vitest'
 
-import { action } from '../events'
+import { action, event } from '../events'
 import { BaseRise, ComponentDefinition, ComponentRegistry, EventRequest } from '../rise'
 
 export const BUILT_IN_COMPONENTS: ComponentRegistry = {
@@ -21,7 +22,7 @@ it('should render a component', () => {
           height: 50,
         },
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -52,7 +53,7 @@ it('should render an array of components', () => {
           children: 'Hello, world!',
         },
       ]}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -95,7 +96,7 @@ it('should use component key when provided', () => {
           ],
         },
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -128,7 +129,7 @@ it('should render a component with single children', () => {
           children: 'Hello, world!',
         },
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -160,7 +161,7 @@ it('should render a component with children of different types', () => {
           },
         ],
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -208,7 +209,7 @@ it('should accept component as a prop', () => {
           },
         },
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -253,7 +254,7 @@ it('should accept object as a prop', () => {
           },
         },
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -269,7 +270,7 @@ it('should accept object as a prop', () => {
 })
 
 it('should accept event handler as a prop', () => {
-  const onEvent = jest.fn()
+  const onEvent = vi.fn()
   const component = render(
     <BaseRise
       components={BUILT_IN_COMPONENTS}
@@ -290,28 +291,28 @@ it('should accept event handler as a prop', () => {
 
   expect(onEvent).toHaveBeenCalledTimes(1)
 
-  const firedEvent = onEvent.mock.lastCall[0] as EventRequest
+  const firedEvent = onEvent.mock.lastCall?.[0] as EventRequest
   expect(firedEvent).toMatchInlineSnapshot(
     {
       key: expect.any(String),
     },
     `
-    Object {
+    {
       "$": "evt",
       "key": Any<String>,
-      "modelState": Array [
-        Object {
+      "modelState": [
+        {
           "$": "action",
           "name": "foo-action",
         },
       ],
-      "payload": Array [
+      "payload": [
         "[native code]",
       ],
-      "target": Object {
+      "target": {
         "component": "View",
         "key": "button",
-        "path": Array [
+        "path": [
           "",
           "props",
           "onClick",
@@ -324,7 +325,7 @@ it('should accept event handler as a prop', () => {
 })
 
 it('should validate props with a validator', () => {
-  const validator = jest.fn().mockImplementation((args) => args)
+  const validator = vi.fn().mockImplementation((args) => args)
   const props = {
     foo: 'foo',
     bar: 'bar',
@@ -345,7 +346,7 @@ it('should validate props with a validator', () => {
         component: 'View',
         props,
       }}
-      onEvent={jest.fn()}
+      onEvent={vi.fn()}
     />
   )
 
@@ -353,7 +354,7 @@ it('should validate props with a validator', () => {
 })
 
 it('should pass return type from onEvent back to component', async () => {
-  const onEvent = jest.fn().mockReturnValue('Mike')
+  const onEvent = vi.fn().mockReturnValue('Mike')
 
   const component = render(
     <BaseRise
@@ -403,7 +404,7 @@ it('should pass return type from onEvent back to component', async () => {
 })
 
 it('should fire multiple template events for an array of actions', () => {
-  const onEvent = jest.fn()
+  const onEvent = vi.fn()
   const component = render(
     <BaseRise
       components={BUILT_IN_COMPONENTS}
@@ -422,16 +423,34 @@ it('should fire multiple template events for an array of actions', () => {
   )
   fireEvent.click(component.getByTestId('button'))
 
-  expect(onEvent.mock.calls[0][0].modelState).toMatchInlineSnapshot(`
-    Array [
-      Object {
+  expect(onEvent.mock.calls?.[0]?.[0].modelState).toMatchInlineSnapshot(`
+    [
+      {
         "$": "action",
         "name": "go-back",
       },
-      Object {
+      {
         "$": "action",
         "name": "go-back-again",
       },
     ]
   `)
+})
+
+it('should throw error for arrays containing mixed types (only action arrays allowed)', () => {
+  expect(() => {
+    render(
+      <BaseRise
+        components={BUILT_IN_COMPONENTS}
+        model={{
+          $: 'component',
+          key: 'button',
+          component: 'View',
+          props: {
+            onClick: [action('go-back'), action('go-back-again'), event(() => {})],
+          },
+        }}
+      />
+    )
+  }).toThrow()
 })

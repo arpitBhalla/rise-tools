@@ -1,4 +1,4 @@
-import { navigate, StackScreen } from '@rise-tools/kit-react-navigation/server'
+import { navigate } from '@rise-tools/kit-react-navigation/server'
 import {
   Button,
   Circle,
@@ -26,10 +26,6 @@ function UI() {
       <Taxi />
     </YStack>
   )
-}
-
-function FeedbackForm() {
-  return <StackScreen title="Feedback" />
 }
 
 function Groceries() {
@@ -101,7 +97,7 @@ function Survey() {
             fontSize="$5"
             fontWeight="bold"
             color="white"
-            onPress={navigate('delivery:feedback-form')}
+            onPress={navigate('delivery:feedback-form', { title: 'Feedback' })}
           >
             Send Feedback
           </Button>
