@@ -1,4 +1,9 @@
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native'
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+  ThemeProvider,
+} from '@react-navigation/native'
 import { registerRootComponent } from 'expo'
 import { useFonts } from 'expo-font'
 import * as Linking from 'expo-linking'
@@ -7,6 +12,7 @@ import React, { useEffect } from 'react'
 import { Platform, StatusBar, useColorScheme } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { Text } from 'tamagui'
 
 import { Screens } from './screens'
 import { storage } from './storage'
@@ -40,22 +46,26 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <TamaguiProvider config={tamaguiConfig}>
-          <NavigationContainer
-            linking={{
-              prefixes: [prefix],
-            }}
-            theme={{
-              ...theme,
-              colors: {
-                ...theme.colors,
-                primary: scheme === 'dark' ? '#FD5811' : '#E74500',
-              },
-            }}
-            initialState={initialState ? JSON.parse(initialState) : undefined}
-            onStateChange={(state) => storage.set('react-navigation', JSON.stringify(state))}
-          >
-            <Screens />
-          </NavigationContainer>
+          <ThemeProvider value={theme}>
+            <NavigationContainer
+              linking={{
+                prefixes: [prefix],
+              }}
+              theme={{
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  primary: scheme === 'dark' ? '#FD5811' : '#E74500',
+                },
+              }}
+              initialState={initialState ? JSON.parse(initialState) : undefined}
+              onStateChange={(state) => storage.set('react-navigation', JSON.stringify(state))}
+            >
+              <Text>demo</Text>
+
+              <Screens />
+            </NavigationContainer>
+          </ThemeProvider>
         </TamaguiProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
